@@ -1,0 +1,9 @@
+import { Router } from "express";
+
+import jobRoutes from "./job.routes.js";
+
+const router = Router();
+
+router.use("/job", jobRoutes);
+
+export default router;
