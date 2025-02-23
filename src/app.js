@@ -1,6 +1,7 @@
 import express from "express"
 import cors from "cors"
 import cookieParser from "cookie-parser"
+import router from "./routes/routes.js"
 
 const app = express()
 
@@ -15,13 +16,6 @@ app.use(express.static("public"))
 app.use(cookieParser())
 
 
-// routes import
-
-import authRoutes from './routes/auth.routes.js'
-
-//routes declaration
-
-app.use('/api/v1/auth/',authRoutes)
-// http://localhost:8000/api/v1/healthcheck
+app.use("/api/v1", router)
 
 export { app }
