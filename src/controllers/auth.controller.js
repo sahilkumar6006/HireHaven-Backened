@@ -1,7 +1,4 @@
 import Employer from "../models/employer.model.js";
-import Employee from '../models/employee.model.js'
-import { ApiError } from "../utils/ApiError.js";
-import { ApiResponse } from "../utils/ApiResponse.js";
 
 export const RegisterEmployer = async (req, res) => {
     try {
@@ -54,36 +51,3 @@ export const RegisterEmployer = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-
-
-export const RegisterEmployee = async (req, res)=>{
-
-    try {
-
-        const {  name,email,phone, password, confirmPassword } = req.body;
-
-       
-        if (!name || !email || !phone || !password || !confirmPassword) {
-            return res.status(400).json({ message: "All fields are required" });
-        }
-
-        const user  = await Employee.findOne({email})
-        if (user) {
-           throw new ApiError(409,"User already exist",["User is already in the database"])
-        }
-
-        const newEmployee = new Employee({
-            name:name,
-            email,
-            password,
-            phone
-        })
-
-        await newEmployee.save()
-        return res.status(200).json(new ApiResponse(200,newEmployee,"User created successfully"));
-
-        
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-}
