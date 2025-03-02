@@ -108,7 +108,49 @@ const deleteJob = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Error deleting job" });
   }
-};      
+};   
+
+
+const jobfilter = async (req, res) => {
+  try {
+    const { location, jobType, skills } = req.body;
+    // Build filter query object
+    const filterQuery = {};
+    
+
+    // Add location filter if provided
+    if (location) {
+      filterQuery.location = { $regex: location, $options: 'i' }; // Case insensitive search
+    }
+
+    // Add jobType filter if provided 
+    if (jobType) {
+      filterQuery.jobType = jobType;
+    }
+
+    // Add skills filter if provided
+    if (skills && skills.length > 0) {
+      filterQuery.skills = { $in: skills }; // Match any of the provided skills
+    }
+
+    // Find jobs matching filters
+    
+    const jobs = await Job.find(filterQuery)
+       // Sort by newest first
+
+    if (!jobs.length) {
+      return res.status(404).json({ message: "No jobs found matching the criteria" });
+    }
+
+    res.status(200).json({
+      success: true,
+      count: jobs.length,
+      data: jobs
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error filtering jobs" });
+  }
+}
 
 export  {
   createJob,
@@ -116,4 +158,5 @@ export  {
   getJobById,
   updateJob,    
   deleteJob,
+  jobfilter
 }
