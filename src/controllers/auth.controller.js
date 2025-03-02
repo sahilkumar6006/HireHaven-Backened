@@ -91,7 +91,7 @@ export const RegisterEmployee = async (req, res)=>{
 
 //employee signUp
 
-export const EmployeeSignIn = async (req,res)=>{
+export const SignIn = async (req,res)=>{
     try {
 
         const{email,password} = req.body;
@@ -101,9 +101,9 @@ export const EmployeeSignIn = async (req,res)=>{
 
         }
 
-        const user = await Employee.findOne({email});
+        let user = await Employee.findOne({email})  ||  await Employer.findOne({email});
         if(!user){
-            throw new ApiError(401,"Invalid username or password",['User not available'])
+            throw new ApiError(401,"Invalid username or password",['User not available in database'])
         }
 
         if(!user.isPasswordCorrect(password)){
@@ -124,36 +124,4 @@ export const EmployeeSignIn = async (req,res)=>{
     }
 
 }
-export const EmployerSignIn = async (req,res)=>{
-    try {
 
-        const{email,password} = req.body;
-        if(!email || !password){
-
-            throw new ApiError(400,"all fields are required",[" All fileds should be filled"])
-
-        }
-
-        const user = await Employer.findOne({email});
-        if(!user){
-            throw new ApiError(401,"Invalid username or password",['User not available'])
-        }
-
-        if(!user.isPasswordCorrect(password)){
-            throw new ApiError(401,"Password is not correct",["Password is not correct"])
-        }
-
-        const accessToken = user.generateAccessToken();
-        const refreshToken = user.generateRefreshToken();
-
-        const data = {
-            accessToken,refreshToken
-        }
-
-        return res.status(200).json(new ApiResponse(200,data,"Logged in successfully"));
-        
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-
-}
