@@ -113,34 +113,31 @@ const deleteJob = async (req, res) => {
 
 const jobfilter = async (req, res) => {
   try {
-    const { location, jobType, skills } = req.body;
-    // Build filter query object
-    const filterQuery = {};
+    const { keyword ,location} = req.body;
     
-
-    // Add location filter if provided
-    if (location) {
-      filterQuery.location = { $regex: location, $options: 'i' }; // Case insensitive search
+    if(!keyword && !location){
+      return res.status(400).json({ message: "Missing required fields" });
     }
+    console.log(keyword,location)
 
-    // Add jobType filter if provided 
-    if (jobType) {
-      filterQuery.jobType = jobType;
-    }
+    const filterQuery = {
+      $or: [
+        { title: { $regex: keyword, $options: "i" } },
+        { description: { $regex: keyword, $options: "i" } },
+        { jobType: { $regex: keyword, $options: "i" } },
+        { skills: { $elemMatch: { $regex: keyword, $options: "i" } } },
+        {location: { $regex: location||keyword, $options: "i" }}
+         // Matching inside array
+      ]
+    };
+    // if(location){
+    //   filterQuery.location = { $regex: location, $options: "i" };
+    // }
 
-    // Add skills filter if provided
-    if (skills && skills.length > 0) {
-      filterQuery.skills = { $in: skills }; // Match any of the provided skills
-    }
+  
 
-    // Find jobs matching filters
-    
-    const jobs = await Job.find(filterQuery)
-       // Sort by newest first
-
-    if (!jobs.length) {
-      return res.status(404).json({ message: "No jobs found matching the criteria" });
-    }
+    const jobs = await Job.find(filterQuery);
+    console.log(jobs)
 
     res.status(200).json({
       success: true,
