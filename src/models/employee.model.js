@@ -123,14 +123,14 @@ EmployeeSchema.methods.generateAccessToken = function () {
       profileImage:this.profileImage,
       isVerified:this.isVerified
     },
-    process.env.ACCESS_TOKEN_SECRET,
+    process.env.JWT_SECRET,
     { expiresIn: "1h" }
   );
 };
 
 // **♻️ Generate Refresh Token**
 EmployeeSchema.methods.generateRefreshToken = function () {
-  return jwt.sign({ _id: this._id }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
+  return jwt.sign({ _id: this._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
 
 export default mongoose.model("Employee",EmployeeSchema)
