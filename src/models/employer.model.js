@@ -4,6 +4,11 @@ import jwt from "jsonwebtoken";
 
 const EmployerSchema = new mongoose.Schema(
   {
+    role:{
+      type:String,
+      default:"Employer"
+    },
+
     isIndividual: {
       type: Boolean,
       default: false,
@@ -90,6 +95,7 @@ EmployerSchema.methods.generateAccessToken = function () {
       isVerified: this.isVerified,
       companyLogo: this.companyLogo,
       profilePicture: this.profilePicture,
+      role:this.role,
     },
     process.env.ACCESS_TOKEN_SECRET,
     { expiresIn: "1h" }
