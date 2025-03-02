@@ -6,6 +6,10 @@ import jwt from "jsonwebtoken";
 
 
 const EmployeeSchema = new mongoose.Schema({
+    role:{
+        type:String,
+        default:"Employee"
+    },
     name: {
         type: String,
         required: true,
@@ -115,6 +119,7 @@ EmployeeSchema.methods.generateAccessToken = function () {
       _id: this._id,
       email: this.email,
       name:this.name,
+      role:this.role,
       profileImage:this.profileImage,
       isVerified:this.isVerified
     },
