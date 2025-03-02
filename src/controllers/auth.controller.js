@@ -103,7 +103,7 @@ export const SignIn = async (req,res)=>{
 
         let user = await Employee.findOne({email})  ||  await Employer.findOne({email});
         if(!user){
-            throw new ApiError(401,"Invalid username or password",['User not available'])
+            throw new ApiError(401,"Invalid username or password",['User not available in database'])
         }
 
         if(!user.isPasswordCorrect(password)){
