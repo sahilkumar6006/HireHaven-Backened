@@ -5,7 +5,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 
 export const updateProfile = async (req, res) => {
     try {
-        const { role } = req.params;
+        const  role  = req.user.role;
         const updates = req.body;
         const userId = req.user._id; // Assuming user ID is available from auth middleware
 
