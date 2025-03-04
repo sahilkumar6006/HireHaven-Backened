@@ -108,7 +108,46 @@ const deleteJob = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Error deleting job" });
   }
-};      
+};   
+
+
+const jobfilter = async (req, res) => {
+  try {
+    const { keyword ,location} = req.body;
+    
+    if(!keyword && !location){
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+    console.log(keyword,location)
+
+    const filterQuery = {
+      $or: [
+        { title: { $regex: keyword, $options: "i" } },
+        { description: { $regex: keyword, $options: "i" } },
+        { jobType: { $regex: keyword, $options: "i" } },
+        { skills: { $elemMatch: { $regex: keyword, $options: "i" } } },
+        {location: { $regex: location||keyword, $options: "i" }}
+         // Matching inside array
+      ]
+    };
+    // if(location){
+    //   filterQuery.location = { $regex: location, $options: "i" };
+    // }
+
+  
+
+    const jobs = await Job.find(filterQuery);
+    console.log(jobs)
+
+    res.status(200).json({
+      success: true,
+      count: jobs.length,
+      data: jobs
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error filtering jobs" });
+  }
+}
 
 export  {
   createJob,
@@ -116,4 +155,5 @@ export  {
   getJobById,
   updateJob,    
   deleteJob,
+  jobfilter
 }

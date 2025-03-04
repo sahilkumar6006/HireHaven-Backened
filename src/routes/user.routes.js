@@ -25,7 +25,7 @@ router.route("/resend-otp").post(resendOtp);
 router.route("/forgot-password").post(forgotPassword);
 router.route("/reset-password").post(resetPassword);
 router.route("/logout").post(authMiddleware, logout);
-
+router.route("/update-profile").post(authMiddleware,updateProfile);
 // Profile routes
 // router.route("/complete-profile").post(, completeProfile);
 router.route("/complete-profile")

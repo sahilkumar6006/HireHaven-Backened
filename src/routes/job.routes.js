@@ -4,7 +4,8 @@ import {
     getJobs,
     getJobById,
     updateJob,
-    deleteJob
+    deleteJob,
+    jobfilter
 } from "../controllers/job.contoller.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 
@@ -16,5 +17,6 @@ router.route("/").get( getJobs);
 router.route("/:id").get( getJobById);
 router.route("/:id").put(updateJob);
 router.route("/:id").delete(deleteJob);
+router.route("/filter").post(jobfilter);
 
 export default router;
